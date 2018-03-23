@@ -10,7 +10,6 @@ blog_post, it will ensure the author is also serialized
 """
 from django.core import serializers
 from django.core.management.base import BaseCommand, CommandError
-from optparse import make_option
 from dev_db.utils import timer
 import logging
 from dev_db.utils import get_creator_instance
@@ -23,20 +22,13 @@ DEBUG = False
 
 class Command(BaseCommand):
     help = 'Output a sample of the database as a fixture of the given format.'
-    option_list = BaseCommand.option_list + (
-        make_option('--format', default='json', dest='format',
-                    help='Specifies the output serialization format for fixtures.'),
-        make_option('--indent', default=4, dest='indent', type='int',
-                    help='Specifies the indent level to use when pretty-printing output'),
-        make_option('--limit', default=None, dest='limit', type='int',
-                    help='Allows you to limit the number of tables, used for testing purposes only'),
-        make_option(
-            '-o', '--output', default=None, dest='output', type='string',
-            help='Path of the output file'),
-        make_option(
-            '--skipcache', default=False, dest='skipcache', action='store_true',
-            help='Skips the settings cache'),
-    )
+
+    def add_arguments(self, parser):
+        parser.add_argument('--format', default='json', dest='format', help='Specifies the output serialization format for fixtures.')
+        parser.add_argument('--indent', default=4, dest='indent', type=int, help='Specifies the indent level to use when pretty-printing output'),
+        parser.add_argument('--limit', default=None, dest='limit', type=int, help='Allows you to limit the number of tables, used for testing purposes only'),
+        parser.add_argument('-o', '--output', default=None, dest='output', type=str, help='Path of the output file'),
+        parser.add_argument('--skipcache', default=False, dest='skipcache', action='store_true', help='Skips the settings cache'),
 
     def handle(self, **options):
         # setup the options
@@ -72,7 +64,7 @@ class Command(BaseCommand):
         logger.info('filtering data took %s', next(t))
         logger.info('serializing data with format %s', self.format)
         serialized = serializers.serialize(
-            self.format, filtered_data, indent=self.indent, use_natural_keys=False)
+            self.format, filtered_data, indent=self.indent, use_natural_foreign_keys=False)
         # write the output
         if self.output:
             self.output.write(serialized)
