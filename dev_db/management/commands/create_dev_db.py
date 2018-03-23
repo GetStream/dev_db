@@ -62,21 +62,21 @@ class Command(BaseCommand):
         else:
             model_settings = creator.get_cached_model_settings()
 
-        logger.info('model_settings lookup took %s', t.next())
+        logger.info('model_settings lookup took %s', next(t))
         data = creator.collect_data(
             model_settings, limit=self.limit, select_related=False)
-        logger.info('data collection took %s', t.next())
+        logger.info('data collection took %s', next(t))
         extended_data = creator.extend_data(data)
-        logger.info('extending data took %s', t.next())
+        logger.info('extending data took %s', next(t))
         filtered_data = creator.filter_data(extended_data)
-        logger.info('filtering data took %s', t.next())
+        logger.info('filtering data took %s', next(t))
         logger.info('serializing data with format %s', self.format)
         serialized = serializers.serialize(
             self.format, filtered_data, indent=self.indent, use_natural_keys=False)
         # write the output
         if self.output:
             self.output.write(serialized)
-        logger.info('serializing data took %s', t.next())
+        logger.info('serializing data took %s', next(t))
         logger.info('total duration %s', t.total)
         return serialized
 

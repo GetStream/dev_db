@@ -1,5 +1,4 @@
-from dev_db.creator import DevDBCreator
-from dev_db.dependencies import get_dependencies, get_first_dependencies
+from dev_db.dependencies import get_dependencies
 from dev_db.utils import *
 from django.contrib.contenttypes.models import ContentType
 from django.test.testcases import TestCase
@@ -13,7 +12,7 @@ class CreatorTestCase(TestCase):
         self.creator = ExampleDevDBCreator()
 
     def test_model_listing(self):
-        listed_models = self.creator.get_models()
+        self.creator.get_models()
         
     def test_recursion(self):
         from core.models import Post
@@ -27,7 +26,6 @@ class CreatorTestCase(TestCase):
         from django.contrib.sessions.models import Session
         from django.contrib.auth.models import User, Permission, Group
         from django.contrib.sites.models import Site as DjangoSite
-        from django.contrib.contenttypes.models import ContentType
         from core.models import SiteCategory, Site, Tag, Item, Post
         expected_result = [
             (SiteCategory, 30),
@@ -42,11 +40,11 @@ class CreatorTestCase(TestCase):
             (User, 30),
             (ContentType, 30),
         ]
-        self.assertEqual(model_settings, expected_result)
+        self.assertEqual(sorted(model_settings, key=lambda x: str(x[0])), sorted(expected_result, key=lambda x: str(x[0])))
 
     def test_collect(self):
         model_settings = self.creator.get_model_settings()
-        data = self.creator.collect_data(model_settings)
+        self.creator.collect_data(model_settings)
 
     def test_dependency_lookup_site(self):
         '''
@@ -55,7 +53,7 @@ class CreatorTestCase(TestCase):
         Site Category, Site, User, Entity, Love
 
         '''
-        from core.models import Site, SiteCategory
+        from core.models import Site
         site = Site.objects.all()[:1][0]
         # check the recursive approach
         dependencies = get_dependencies(site)
@@ -100,5 +98,5 @@ class CreatorTestCase(TestCase):
         data = self.creator.collect_data(model_settings)
         extended_data = self.creator.extend_data(data)
         filtered_data = self.creator.filter_data(extended_data)
-        serialized = serializers.serialize(
-            'json', filtered_data, indent=4, use_natural_keys=True)
+        serializers.serialize(
+            'json', filtered_data, indent=4, use_natural_foreign_keys=True)

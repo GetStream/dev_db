@@ -110,11 +110,11 @@ class Command(BaseCommand):
     requires_model_validation = False
 
     def handle(self, *args, **options):
-        print 'starting'
+        print('starting')
         call_command('validate')
-        print 'found fixtures', fixtures
-        for name, generator in fixtures.items():
-            print name, generator
+        print('found fixtures', fixtures)
+        for name, generator in list(fixtures.items()):
+            print(name, generator)
             instance = generator()
             instance.regenerate()
-            print 'replaced fixture %s' % instance.get_path()
+            print('replaced fixture %s' % instance.get_path())

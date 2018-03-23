@@ -1,5 +1,5 @@
 from dev_db.utils import get_all_fields
-from django.contrib.contenttypes.generic import GenericForeignKey
+from django.contrib.contenttypes.fields import GenericForeignKey
 from django.db.models.fields.related import ForeignKey, ManyToManyField
 
 

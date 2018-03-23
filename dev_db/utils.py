@@ -40,9 +40,9 @@ def get_all_fields(instance):
     # follow forward relation fields
     normal_fields = instance.__class__._meta.fields
     many_to_many_fields = instance.__class__._meta.many_to_many
-    virtual_fields = instance.__class__._meta.virtual_fields
+    private_fields = instance.__class__._meta.private_fields
     
-    all_fields = list(normal_fields) + list(many_to_many_fields) + list(virtual_fields)
+    all_fields = list(normal_fields) + list(many_to_many_fields) + list(private_fields)
     return all_fields
 
 
@@ -90,7 +90,7 @@ def get_class_from_string(path, default='raise'):
     module, attr = path[:i], path[i + 1:]
     try:
         mod = import_module(module)
-    except ImportError, e:
+    except ImportError as e:
         raise ImproperlyConfigured(
             'Error loading registration backend %s: "%s"' % (module, e))
     try:
@@ -110,13 +110,13 @@ class timer(object):
     def __init__(self):
         self.times = [time.time()]
         self.total = 0.
-        self.next()
+        next(self)
 
     def __iter__(self):
         while True:
-            yield self.next()
+            yield next(self)
 
-    def next(self):
+    def __next__(self):
         times = self.times
         times.append(time.time())
         delta = times[-1] - times[-2]

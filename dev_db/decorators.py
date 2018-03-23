@@ -115,7 +115,7 @@ class CachedDecorator(object):
         '''
         import inspect
         argnames, varargs, keywords, defaults = inspect.getargspec(fn)
-        arg_kwargs = dict(zip(argnames, args))
+        arg_kwargs = dict(list(zip(argnames, args)))
         kwargs.update(arg_kwargs)
         args = []
         return args, kwargs

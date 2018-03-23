@@ -14,8 +14,7 @@ class SiteCategory(models.Model):
 
     
 class Site(models.Model):
-    category = models.ForeignKey(SiteCategory)
-    #url = models.TextField()
+    category = models.ForeignKey(SiteCategory, on_delete=models.CASCADE)
 
     
 class Tag(models.Model):
@@ -23,9 +22,9 @@ class Tag(models.Model):
 
     
 class Item(models.Model):
-    site = models.ForeignKey(Site)
+    site = models.ForeignKey(Site, on_delete=models.CASCADE)
     url = models.TextField()
-    user = models.ForeignKey(User)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
     
     tags = models.ManyToManyField(Tag)
     
@@ -34,12 +33,8 @@ class Item(models.Model):
     
 class Blogger(models.Model):
     name = models.CharField(max_length=255)
-    favourite_post = models.ForeignKey('Post', related_name='favourites')
+    favourite_post = models.ForeignKey('Post', related_name='favourites', on_delete=models.CASCADE)
+
     
 class Post(models.Model):
-    blogger = models.ForeignKey(Blogger)
-    
-    
-
-    
-
+    blogger = models.ForeignKey(Blogger, on_delete=models.CASCADE)

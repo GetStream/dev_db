@@ -1,10 +1,10 @@
+import django.apps
 from dev_db.decorators import cached
 from dev_db.dependencies import get_dependencies
 from dev_db.utils import get_max_id, model_name, model_has_id_primary_key, \
     hash_instance
 from django.contrib.auth.models import Permission
 from django.contrib.contenttypes.models import ContentType
-from django.db.models.loading import get_models
 import logging
 from django.contrib.auth import get_user_model
 
@@ -151,7 +151,7 @@ class DevDBCreator(object):
         return excluded
 
     def get_all_models(self):
-        return [(m, model_name(m)) for m in get_models()]
+        return [(m, model_name(m)) for m in django.apps.apps.get_models()]
 
     def get_custom_data(self):
         logger.info('loading staff users')
