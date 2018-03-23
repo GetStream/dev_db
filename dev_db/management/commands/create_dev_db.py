@@ -27,7 +27,7 @@ class Command(BaseCommand):
         parser.add_argument('--format', default='json', dest='format', help='Specifies the output serialization format for fixtures.')
         parser.add_argument('--indent', default=4, dest='indent', type=int, help='Specifies the indent level to use when pretty-printing output'),
         parser.add_argument('--limit', default=None, dest='limit', type=int, help='Allows you to limit the number of tables, used for testing purposes only'),
-        parser.add_argument('-o', '--output', default=None, dest='output', type=str, help='Path of the output file'),
+        parser.add_argument('--output', default=None, dest='output', type=str, help='Path of the output file'),
         parser.add_argument('--skipcache', default=False, dest='skipcache', action='store_true', help='Skips the settings cache'),
 
     def handle(self, **options):
@@ -68,9 +68,10 @@ class Command(BaseCommand):
         # write the output
         if self.output:
             self.output.write(serialized)
+        else:
+            print(serialized)
         logger.info('serializing data took %s', next(t))
         logger.info('total duration %s', t.total)
-        return serialized
 
     def _validate_serializer(self, format):
         # Check that the serialization format exists; this is a shortcut to
