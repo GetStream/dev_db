@@ -76,7 +76,7 @@ def get_first_dependencies(instance):
         # handle many to many fields, we need to support this as django will attempt
         # to serialize them when serializing related items
         if isinstance(f, ManyToManyField):
-            for new in getattr(instance, f.name).all():
+            for new in getattr(instance, f.name).all().select_related():
                 if new:
                     dependencies.insert(0, new)
 
