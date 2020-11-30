@@ -9,44 +9,44 @@ It maintains referential integrity by looking up the dependencies for the select
 
 
 tests_require = [
-    'mock',
-    'pep8',
-    'coverage',
-    'unittest2',
-    'pytest',
-    'django',
+    "mock",
+    "pep8",
+    "coverage",
+    "unittest2",
+    "pytest",
+    "django",
 ]
 
 install_requires = []
 
-license_text = open('LICENSE.txt').read()
-long_description = open('README.md').read()
+license_text = open("LICENSE.txt").read()
+long_description = open("README.md").read()
 CLASSIFIERS = [
-    'Development Status :: 5 - Production/Stable',
-    'Intended Audience :: Developers',
-    'License :: OSI Approved :: BSD License',
-    'Natural Language :: English',
-    'Operating System :: OS Independent',
-    'Programming Language :: Python',
-    'Topic :: Scientific/Engineering :: Mathematics',
-    'Topic :: Software Development :: Libraries :: Python Modules',
+    "Development Status :: 5 - Production/Stable",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: BSD License",
+    "Natural Language :: English",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python",
+    "Topic :: Scientific/Engineering :: Mathematics",
+    "Topic :: Software Development :: Libraries :: Python Modules",
 ]
 
 setup(
-    name='dev_db',
+    name="dev_db",
     version=__version__,
     author=__maintainer__,
     author_email=__email__,
     license=license_text,
-    url='http://github.com/tschellenbach/dev_db',
+    url="http://github.com/tschellenbach/dev_db",
     description=DESCRIPTION,
     long_description=long_description,
     packages=find_packages(exclude=("tests",)),
     zip_safe=False,
     install_requires=install_requires,
     tests_require=tests_require,
-    extras_require={'test': tests_require},
-    test_suite='runtests.runtests',
+    extras_require={"test": tests_require},
+    test_suite="runtests.runtests",
     include_package_data=True,
     classifiers=CLASSIFIERS,
 )

@@ -1,9 +1,8 @@
-
 from functools import wraps
 
 
 def simplify_class_decorator(class_decorator):
-    '''
+    """
     Makes the decorator syntax uniform
     Regardless if you call the decorator like
         @decorator
@@ -20,7 +19,7 @@ def simplify_class_decorator(class_decorator):
     __call__()
         return a function which accepts the *args and *kwargs intended
         for fn
-    '''
+    """
     # this makes sure the resulting decorator shows up as
     # function FacebookRequired instead of outer
     @wraps(class_decorator)
@@ -36,6 +35,7 @@ def simplify_class_decorator(class_decorator):
             wrapped_view = actual_decorator
 
         return wrapped_view
+
     return outer
 
 
@@ -61,17 +61,17 @@ class CachedDecorator:
     """
 
     def __init__(self, fn, key, timeout):
-        '''
+        """
         :param fn: the function passed to the decorator
         :param key: a python format string used for determining the key, ie 'key_%(user_id)s'
         :param timeout: timeout in seconds
-        '''
+        """
         self.fn = fn
         self.key = key
         self.timeout = timeout
 
     def __call__(self):
-        '''
+        """
         When the decorator is called like this
             @cached
             The call will receive
@@ -79,7 +79,8 @@ class CachedDecorator:
         Otherwise it will be like
             @cached()
             The init will receive the parameters
-        '''
+        """
+
         @wraps(self.fn)
         def wrapped_view(*args, **kwargs):
             response = self.cached(self.fn, *args, **kwargs)
@@ -88,10 +89,11 @@ class CachedDecorator:
         return wrapped_view
 
     def cached(self, fn, *args, **kwargs):
-        '''
+        """
         try the cache and fallback to the function
-        '''
+        """
         from django.core.cache import cache
+
         # simplify to only using kwargs for easy key string formatting
         args, kwargs = self.args_to_kwargs(fn, args, kwargs)
 
@@ -107,10 +109,11 @@ class CachedDecorator:
         return data
 
     def args_to_kwargs(self, fn, args, kwargs):
-        '''
+        """
         Turn arg bassed calls to kwargs
-        '''
+        """
         import inspect
+
         argnames, varargs, keywords, defaults = inspect.getargspec(fn)
         arg_kwargs = dict(list(zip(argnames, args)))
         kwargs.update(arg_kwargs)

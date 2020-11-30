@@ -14,7 +14,7 @@ install:
   - pip install pyflakes
   - python setup.py install
 before_script:
-  - "pep8 --exclude=migrations --ignore=E501,E225 dev_db"
+  - "pep8 --exclude=migrations --ignore=E203,E225,E501,W503 dev_db"
   - pyflakes dev_db
 script:
   - pip install -e .

@@ -15,7 +15,7 @@ def register(fixture_generator):
 
 
 class FixtureGenerator:
-    '''
+    """
     Usually you'll want to replace
 
     - name
@@ -65,7 +65,8 @@ class FixtureGenerator:
 
         register(CommunicationFixture)
 
-    '''
+    """
+
     name = None
     fixture_path = None
 
@@ -95,6 +96,7 @@ class FixtureGenerator:
 
     def get_objects_with_deps(self):
         from dev_db.dependencies import get_dependencies
+
         objects = self.get_objects()
         deps = []
         for object_ in objects:
@@ -105,16 +107,16 @@ class FixtureGenerator:
 
 
 class Command(BaseCommand):
-    help = 'Get a list of the current settings'
+    help = "Get a list of the current settings"
     can_import_settings = True
     requires_model_validation = False
 
     def handle(self, *args, **options):
-        print('starting')
-        call_command('validate')
-        print('found fixtures', fixtures)
+        print("starting")
+        call_command("validate")
+        print("found fixtures", fixtures)
         for name, generator in list(fixtures.items()):
             print(name, generator)
             instance = generator()
             instance.regenerate()
-            print('replaced fixture %s' % instance.get_path())
+            print("replaced fixture %s" % instance.get_path())

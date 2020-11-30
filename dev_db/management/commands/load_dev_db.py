@@ -21,22 +21,46 @@ DEBUG = False
 
 
 class Command(BaseCommand):
-    help = 'Output a sample of the database as a fixture of the given format.'
+    help = "Output a sample of the database as a fixture of the given format."
 
     def add_arguments(self, parser):
-        parser.add_argument('--format', default='json', dest='format', help='Specifies the output serialization format for fixtures.')
-        parser.add_argument('--indent', default=4, dest='indent', type=int, help='Specifies the indent level to use when pretty-printing output')
-        parser.add_argument('--limit', default=None, dest='limit', type=int, help='Allows you to limit the number of tables, used for testing purposes only')
-        parser.add_argument('--skipcache', default=False, dest='skipcache', action='store_true', help='Skips the settings cache')
+        parser.add_argument(
+            "--format",
+            default="json",
+            dest="format",
+            help="Specifies the output serialization format for fixtures.",
+        )
+        parser.add_argument(
+            "--indent",
+            default=4,
+            dest="indent",
+            type=int,
+            help="Specifies the indent level to use when pretty-printing output",
+        )
+        parser.add_argument(
+            "--limit",
+            default=None,
+            dest="limit",
+            type=int,
+            help="Allows you to limit the number of tables, used for testing purposes only",
+        )
+        parser.add_argument(
+            "--skipcache",
+            default=False,
+            dest="skipcache",
+            action="store_true",
+            help="Skips the settings cache",
+        )
 
     def handle(self, **options):
-        fixture_path = os.path.join(
-            settings.BASE_ROOT, 'development_data.json.gz')
-        logger.info('loading the fixture from %s', fixture_path)
+        fixture_path = os.path.join(settings.BASE_ROOT, "development_data.json.gz")
+        logger.info("loading the fixture from %s", fixture_path)
 
         ContentType.objects.clear_cache()
         call_command(
-            'loaddata', fixture_path,
-            exclude=['contenttypes.ContentType', 'auth.Permission', 'auth.Group'],
-            traceback=True, verbosity=3
+            "loaddata",
+            fixture_path,
+            exclude=["contenttypes.ContentType", "auth.Permission", "auth.Group"],
+            traceback=True,
+            verbosity=3,
         )
