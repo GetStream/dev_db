@@ -1,9 +1,10 @@
+import os
+
 from django.conf import settings
 from django.contrib.auth.models import Permission, Group
 from django.contrib.contenttypes.models import ContentType
 from django.core import serializers
 from django.core.management.base import BaseCommand
-import os
 from django.core.management import call_command
 
 fixtures = {}
@@ -13,8 +14,7 @@ def register(fixture_generator):
     fixtures[fixture_generator.name] = fixture_generator
 
 
-class FixtureGenerator(object):
-
+class FixtureGenerator:
     '''
     Usually you'll want to replace
 

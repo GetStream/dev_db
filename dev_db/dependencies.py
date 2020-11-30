@@ -3,7 +3,6 @@ from django.contrib.contenttypes.fields import GenericForeignKey
 from django.db.models.fields.related import ForeignKey, ManyToManyField
 
 
-
 def get_dependencies(instance, dependencies=None, instances=None):
     '''
     Recurses through the results and finds the dependencies
@@ -84,7 +83,7 @@ def get_first_dependencies(instance):
     if isinstance(instance, UserModel):
         try:
             profile = instance.get_profile()
-        except:
+        except Exception:
             profile = None
         if profile:
             dependencies.append(profile)

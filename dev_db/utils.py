@@ -41,7 +41,7 @@ def get_all_fields(instance):
     normal_fields = instance.__class__._meta.fields
     many_to_many_fields = instance.__class__._meta.many_to_many
     private_fields = instance.__class__._meta.private_fields
-    
+
     all_fields = list(normal_fields) + list(many_to_many_fields) + list(private_fields)
     return all_fields
 
@@ -105,8 +105,7 @@ def get_class_from_string(path, default='raise'):
     return backend_class
 
 
-class timer(object):
-
+class Timer:
     def __init__(self):
         self.times = [time.time()]
         self.total = 0.
@@ -126,8 +125,7 @@ class timer(object):
     def get_avg(self, default=None):
         if self.times:
             return self.total / len(self.times)
-        else:
-            return default
+        return default
 
     avg = property(get_avg)
 

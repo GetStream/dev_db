@@ -1,6 +1,5 @@
 
 from functools import wraps
-from django.utils.decorators import available_attrs
 
 
 def simplify_class_decorator(class_decorator):
@@ -26,8 +25,6 @@ def simplify_class_decorator(class_decorator):
     # function FacebookRequired instead of outer
     @wraps(class_decorator)
     def outer(fn=None, *decorator_args, **decorator_kwargs):
-        # wraps isn't needed, the decorator should do the wrapping :)
-        # @wraps(fn, assigned=available_attrs(fn))
         def actual_decorator(fn):
             instance = class_decorator(fn, *decorator_args, **decorator_kwargs)
             _wrapped_view = instance.__call__()
@@ -42,7 +39,7 @@ def simplify_class_decorator(class_decorator):
     return outer
 
 
-class CachedDecorator(object):
+class CachedDecorator:
 
     """
     Decorator which cached the call to the give function. Usage example ::
@@ -83,7 +80,7 @@ class CachedDecorator(object):
             @cached()
             The init will receive the parameters
         '''
-        @wraps(self.fn, assigned=available_attrs(self.fn))
+        @wraps(self.fn)
         def wrapped_view(*args, **kwargs):
             response = self.cached(self.fn, *args, **kwargs)
             return response
@@ -119,5 +116,6 @@ class CachedDecorator(object):
         kwargs.update(arg_kwargs)
         args = []
         return args, kwargs
+
 
 cached = simplify_class_decorator(CachedDecorator)

@@ -8,12 +8,13 @@ optimized tools like pg_dump
 This script follows relations to ensure referential integrity so if you load
 blog_post, it will ensure the author is also serialized
 """
+import os
+import logging
+
 from django.conf import settings
 from django.contrib.contenttypes.models import ContentType
 from django.core.management import call_command
 from django.core.management.base import BaseCommand
-import logging
-import os
 
 logger = logging.getLogger(__name__)
 DEBUG = False
@@ -34,7 +35,8 @@ class Command(BaseCommand):
         logger.info('loading the fixture from %s', fixture_path)
 
         ContentType.objects.clear_cache()
-        call_command('loaddata', fixture_path,
+        call_command(
+            'loaddata', fixture_path,
             exclude=['contenttypes.ContentType', 'auth.Permission', 'auth.Group'],
             traceback=True, verbosity=3
         )

@@ -1,17 +1,19 @@
+import logging
+
 import django.apps
+from django.contrib.auth import get_user_model
+from django.contrib.auth.models import Permission
+from django.contrib.contenttypes.models import ContentType
+
 from dev_db.decorators import cached
 from dev_db.dependencies import get_dependencies
 from dev_db.utils import get_max_id, model_name, model_has_id_primary_key, \
     hash_instance
-from django.contrib.auth.models import Permission
-from django.contrib.contenttypes.models import ContentType
-import logging
-from django.contrib.auth import get_user_model
 
 logger = logging.getLogger(__name__)
 
 
-class DevDBCreator(object):
+class DevDBCreator:
 
     '''
     The dev creator class handles all the logic for creating a dev db sample from your main database
@@ -36,25 +38,23 @@ class DevDBCreator(object):
         excluded = self.get_excluded_models()
         all_models = self.get_all_models()
         valid_models = list(full_required)
-        
 
         for m, n in all_models:
             # skip the ones already in full required
             if m in valid_models:
                 continue
-            table = m._meta.db_table
-            # handle the excludes
-            valid = True
-            for e in excluded:
-                if e in table:
-                    valid = False
-            if getattr(m._meta, 'proxy'):
-                valid = False
-            if valid:
-                valid_models.append(m)
-                
+
+            if all(map(lambda x: x not in m._meta.db_table, excluded)) \
+                    and not getattr(m._meta, 'proxy'):
+                try:
+                    m.objects.first()  # trigger potential database errors
+                except Exception as e:
+                    logger.error('%s: %s', type(e).__name__, e)
+                else:
+                    valid_models.append(m)
+
         logger.info('processing %s models', valid_models)
-                
+
         return valid_models
 
     def get_model_settings(self):
@@ -86,7 +86,7 @@ class DevDBCreator(object):
         logger.info('loading the custom data first')
         objects = self.get_custom_data()
 
-        for (m, limit) in model_settings[:limit]:
+        for m, limit in model_settings[:limit]:
             logger.info('getting %s items for model %s', limit, m)
             id_primary_key = model_has_id_primary_key(m)
             if id_primary_key:

@@ -1,5 +1,4 @@
 from dev_db.dependencies import get_dependencies
-from dev_db.utils import *
 from django.contrib.contenttypes.models import ContentType
 from django.test.testcases import TestCase
 
@@ -13,7 +12,7 @@ class CreatorTestCase(TestCase):
 
     def test_model_listing(self):
         self.creator.get_models()
-        
+
     def test_recursion(self):
         from core.models import Post
         post = Post.objects.get(pk=1)
@@ -35,7 +34,7 @@ class CreatorTestCase(TestCase):
             (Post, 30),
             (Session, 30),
             (DjangoSite, 30),
-            (Permission, 30),
+            (Permission, 10),
             (Group, 30),
             (User, 30),
             (ContentType, 30),

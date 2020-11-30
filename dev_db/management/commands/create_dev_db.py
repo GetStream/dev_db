@@ -8,12 +8,14 @@ optimized tools like pg_dump
 This script follows relations to ensure referential integrity so if you load
 blog_post, it will ensure the author is also serialized
 """
+import os
+import logging
+
 from django.core import serializers
 from django.core.management.base import BaseCommand, CommandError
-from dev_db.utils import timer
-import logging
+
+from dev_db.utils import Timer
 from dev_db.utils import get_creator_instance
-import os
 
 
 logger = logging.getLogger(__name__)
@@ -45,7 +47,7 @@ class Command(BaseCommand):
         logger.info(
             'serializing using %s and indent %s', self.format, self.indent)
 
-        t = timer()
+        t = Timer()
         creator = get_creator_instance()
         logger.info('using creator instance %s', creator)
         if self.skipcache:
