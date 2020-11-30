@@ -8,12 +8,14 @@ optimized tools like pg_dump
 This script follows relations to ensure referential integrity so if you load
 blog_post, it will ensure the author is also serialized
 """
+import os
+import logging
+
 from django.core import serializers
 from django.core.management.base import BaseCommand, CommandError
-from dev_db.utils import timer
-import logging
+
+from dev_db.utils import Timer
 from dev_db.utils import get_creator_instance
-import os
 
 
 logger = logging.getLogger(__name__)
@@ -21,57 +23,90 @@ DEBUG = False
 
 
 class Command(BaseCommand):
-    help = 'Output a sample of the database as a fixture of the given format.'
+    help = "Output a sample of the database as a fixture of the given format."
 
     def add_arguments(self, parser):
-        parser.add_argument('--format', default='json', dest='format', help='Specifies the output serialization format for fixtures.')
-        parser.add_argument('--indent', default=4, dest='indent', type=int, help='Specifies the indent level to use when pretty-printing output'),
-        parser.add_argument('--limit', default=None, dest='limit', type=int, help='Allows you to limit the number of tables, used for testing purposes only'),
-        parser.add_argument('--output', default=None, dest='output', type=str, help='Path of the output file'),
-        parser.add_argument('--skipcache', default=False, dest='skipcache', action='store_true', help='Skips the settings cache'),
+        parser.add_argument(
+            "--format",
+            default="json",
+            dest="format",
+            help="Specifies the output serialization format for fixtures.",
+        )
+        parser.add_argument(
+            "--indent",
+            default=4,
+            dest="indent",
+            type=int,
+            help="Specifies the indent level to use when pretty-printing output",
+        ),
+        parser.add_argument(
+            "--limit",
+            default=None,
+            dest="limit",
+            type=int,
+            help="Allows you to limit the number of tables, used for testing purposes only",
+        ),
+        parser.add_argument(
+            "--output",
+            default=None,
+            dest="output",
+            type=str,
+            help="Path of the output file",
+        ),
+        parser.add_argument(
+            "--skipcache",
+            default=False,
+            dest="skipcache",
+            action="store_true",
+            help="Skips the settings cache",
+        ),
 
     def handle(self, **options):
         # setup the options
-        self.format = options.get('format', 'json')
+        self.format = options.get("format", "json")
         self._validate_serializer(self.format)
-        self.indent = options.get('indent', 4)
-        self.limit = options.get('limit')
-        output = options.get('output')
+        self.indent = options.get("indent", 4)
+        self.limit = options.get("limit")
+        output = options.get("output")
         self.output = None
         if output:
             self.output_path = os.path.abspath(output)
-            self.output = open(self.output_path, 'w')
-        self.skipcache = options.get('skipcache')
-        logger.info(
-            'serializing using %s and indent %s', self.format, self.indent)
+            self.output = open(self.output_path, "w")
+        self.skipcache = options.get("skipcache")
+        logger.info("serializing using %s and indent %s", self.format, self.indent)
 
-        t = timer()
+        t = Timer()
         creator = get_creator_instance()
-        logger.info('using creator instance %s', creator)
+        logger.info("using creator instance %s", creator)
         if self.skipcache:
-            logger.info('skipping the cache')
+            logger.info("skipping the cache")
             model_settings = creator.get_model_settings()
         else:
             model_settings = creator.get_cached_model_settings()
 
-        logger.info('model_settings lookup took %s', next(t))
+        logger.info("model_settings lookup took %s", next(t))
         data = creator.collect_data(
-            model_settings, limit=self.limit, select_related=False)
-        logger.info('data collection took %s', next(t))
+            model_settings, limit=self.limit, select_related=False
+        )
+        logger.info("data collection took %s", next(t))
         extended_data = creator.extend_data(data)
-        logger.info('extending data took %s', next(t))
+        logger.info("extending data took %s", next(t))
         filtered_data = creator.filter_data(extended_data)
-        logger.info('filtering data took %s', next(t))
-        logger.info('serializing data with format %s', self.format)
+        logger.info("filtering data took %s", next(t))
+        logger.info("serializing data with format %s", self.format)
         serialized = serializers.serialize(
-            self.format, filtered_data, indent=self.indent, use_natural_foreign_keys=False)
+            self.format,
+            filtered_data,
+            indent=self.indent,
+            use_natural_foreign_keys=False,
+        )
         # write the output
         if self.output:
             self.output.write(serialized)
         else:
             print(serialized)
-        logger.info('serializing data took %s', next(t))
-        logger.info('total duration %s', t.total)
+        logger.info("serializing data took %s", next(t))
+        logger.info("total duration %s", t.total)
 
     def _validate_serializer(self, format):
         # Check that the serialization format exists; this is a shortcut to

@@ -1,9 +1,10 @@
+import os
+
 from django.conf import settings
 from django.contrib.auth.models import Permission, Group
 from django.contrib.contenttypes.models import ContentType
 from django.core import serializers
 from django.core.management.base import BaseCommand
-import os
 from django.core.management import call_command
 
 fixtures = {}
@@ -13,9 +14,8 @@ def register(fixture_generator):
     fixtures[fixture_generator.name] = fixture_generator
 
 
-class FixtureGenerator(object):
-
-    '''
+class FixtureGenerator:
+    """
     Usually you'll want to replace
 
     - name
@@ -65,7 +65,8 @@ class FixtureGenerator(object):
 
         register(CommunicationFixture)
 
-    '''
+    """
+
     name = None
     fixture_path = None
 
@@ -95,6 +96,7 @@ class FixtureGenerator(object):
 
     def get_objects_with_deps(self):
         from dev_db.dependencies import get_dependencies
+
         objects = self.get_objects()
         deps = []
         for object_ in objects:
@@ -105,16 +107,16 @@ class FixtureGenerator(object):
 
 
 class Command(BaseCommand):
-    help = 'Get a list of the current settings'
+    help = "Get a list of the current settings"
     can_import_settings = True
     requires_model_validation = False
 
     def handle(self, *args, **options):
-        print('starting')
-        call_command('validate')
-        print('found fixtures', fixtures)
+        print("starting")
+        call_command("validate")
+        print("found fixtures", fixtures)
         for name, generator in list(fixtures.items()):
             print(name, generator)
             instance = generator()
             instance.regenerate()
-            print('replaced fixture %s' % instance.get_path())
+            print("replaced fixture %s" % instance.get_path())

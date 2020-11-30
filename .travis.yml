@@ -8,16 +8,16 @@ python:
 env:
   - REQUIREMENTS=development SETTINGS=facebook_example.settings TESTS=django_facebook
 install:
-  - pip install pep8 --use-mirrors
-  - pip install coverage --use-mirrors
-  - pip install unittest2 --use-mirrors
-  - pip install https://github.com/dcramer/pyflakes/tarball/master
+  - pip install pep8
+  - pip install coverage
+  - pip install unittest2
+  - pip install pyflakes
   - python setup.py install
 before_script:
-  - "pep8 --exclude=migrations --ignore=E501,E225 dev_db"
-  - pyflakes -x W dev_db
+  - "pep8 --exclude=migrations --ignore=E203,E225,E501,W503 dev_db"
+  - pyflakes dev_db
 script:
   - pip install -e .
   - pip install django
   - cd dev_db_example
-  - manage.py test dev_db
+  - python manage.py test dev_db

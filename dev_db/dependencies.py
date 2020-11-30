@@ -3,9 +3,8 @@ from django.contrib.contenttypes.fields import GenericForeignKey
 from django.db.models.fields.related import ForeignKey, ManyToManyField
 
 
-
 def get_dependencies(instance, dependencies=None, instances=None):
-    '''
+    """
     Recurses through the results and finds the dependencies
 
     Example:
@@ -16,7 +15,7 @@ def get_dependencies(instance, dependencies=None, instances=None):
 
     Recurse
     (User, Profile, User, Profile, Site Category, Site, Entity, Love)
-    '''
+    """
     # set the defaults
     if dependencies is None:
         dependencies = []
@@ -50,14 +49,15 @@ def get_dependencies(instance, dependencies=None, instances=None):
 
 
 def get_first_dependencies(instance):
-    '''
+    """
     Returns all dependencies for this instance and the instance itself
     in the right order
 
     Note: Only goes one level deep
-    '''
+    """
     # exception for profiles
     from django.contrib.auth import get_user_model
+
     UserModel = get_user_model()
 
     # get all fields for this instance
@@ -84,7 +84,7 @@ def get_first_dependencies(instance):
     if isinstance(instance, UserModel):
         try:
             profile = instance.get_profile()
-        except:
+        except Exception:
             profile = None
         if profile:
             dependencies.append(profile)

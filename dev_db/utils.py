@@ -1,7 +1,6 @@
-
-'''
+"""
 Model level functions
-'''
+"""
 import time
 
 
@@ -9,9 +8,9 @@ def get_max_id(m):
     max_id = 0
     id_primary_key = model_has_id_primary_key(m)
     if id_primary_key:
-        instances = list(m._default_manager.all().order_by('-id')[:1])
+        instances = list(m._default_manager.all().order_by("-id")[:1])
         if instances:
-            max_id = getattr(instances[0], 'id', 0)
+            max_id = getattr(instances[0], "id", 0)
     return max_id
 
 
@@ -22,18 +21,18 @@ def get_field_names(m):
 
 def model_has_id_primary_key(m):
     field_names = get_field_names(m)
-    id_primary_key = 'id' in field_names
+    id_primary_key = "id" in field_names
     return id_primary_key
 
 
 def model_name(m):
-    module = m.__module__.split('.')[:-1]  # remove .models
+    module = m.__module__.split(".")[:-1]  # remove .models
     return ".".join(module + [m._meta.object_name])
 
 
-'''
+"""
 Instance level functions
-'''
+"""
 
 
 def get_all_fields(instance):
@@ -41,7 +40,7 @@ def get_all_fields(instance):
     normal_fields = instance.__class__._meta.fields
     many_to_many_fields = instance.__class__._meta.many_to_many
     private_fields = instance.__class__._meta.private_fields
-    
+
     all_fields = list(normal_fields) + list(many_to_many_fields) + list(private_fields)
     return all_fields
 
@@ -50,9 +49,9 @@ def hash_instance(instance):
     return hash((instance.__class__, instance.pk))
 
 
-'''
+"""
 General utilities
-'''
+"""
 
 
 def get_creator_instance():
@@ -62,13 +61,14 @@ def get_creator_instance():
 
 def get_creator_class():
     from django.conf import settings
-    default = 'dev_db.creator.DevDBCreator'
-    creator_class_string = getattr(settings, 'DEV_DB_CREATOR', default)
+
+    default = "dev_db.creator.DevDBCreator"
+    creator_class_string = getattr(settings, "DEV_DB_CREATOR", default)
     creator_class = get_class_from_string(creator_class_string)
     return creator_class
 
 
-def get_class_from_string(path, default='raise'):
+def get_class_from_string(path, default="raise"):
     """
     Return the class specified by the string.
 
@@ -81,35 +81,37 @@ def get_class_from_string(path, default='raise'):
     ``django.core.exceptions.ImproperlyConfigured`` is raised.
     """
     from django.core.exceptions import ImproperlyConfigured
+
     backend_class = None
     try:
         from importlib import import_module
     except ImportError:
         from django.utils.importlib import import_module
-    i = path.rfind('.')
-    module, attr = path[:i], path[i + 1:]
+    i = path.rfind(".")
+    module, attr = path[:i], path[i + 1 :]
     try:
         mod = import_module(module)
     except ImportError as e:
         raise ImproperlyConfigured(
-            'Error loading registration backend %s: "%s"' % (module, e))
+            'Error loading registration backend %s: "%s"' % (module, e)
+        )
     try:
         backend_class = getattr(mod, attr)
     except AttributeError:
-        if default == 'raise':
+        if default == "raise":
             raise ImproperlyConfigured(
                 'Module "%s" does not define a registration '
-                'backend named "%s"' % (module, attr))
+                'backend named "%s"' % (module, attr)
+            )
         else:
             backend_class = default
     return backend_class
 
 
-class timer(object):
-
+class Timer:
     def __init__(self):
         self.times = [time.time()]
-        self.total = 0.
+        self.total = 0.0
         next(self)
 
     def __iter__(self):
@@ -126,8 +128,7 @@ class timer(object):
     def get_avg(self, default=None):
         if self.times:
             return self.total / len(self.times)
-        else:
-            return default
+        return default
 
     avg = property(get_avg)
 
@@ -135,7 +136,8 @@ class timer(object):
 def get_profile_class():
     from django.conf import settings
     from django.db import models
+
     profile_string = settings.AUTH_PROFILE_MODULE
-    app_label, model = profile_string.split('.')
+    app_label, model = profile_string.split(".")
 
     return models.get_model(app_label, model)
