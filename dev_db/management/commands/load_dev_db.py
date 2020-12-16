@@ -1,66 +1,86 @@
 """
-Dumps data from the main database, but only dumps a subset of the items
-To ensure we can load them on the development server
-
-We use this because the production database became too heavy to load even with
-optimized tools like pg_dump
-
-This script follows relations to ensure referential integrity so if you load
-blog_post, it will ensure the author is also serialized
+Loads data from the main database
 """
-import os
 import logging
+from pathlib import Path
 
 from django.conf import settings
+from django.db import connection
+from django.contrib.auth.models import Permission
 from django.contrib.contenttypes.models import ContentType
 from django.core.management import call_command
 from django.core.management.base import BaseCommand
+from django.db.models.signals import pre_save, post_save
 
 logger = logging.getLogger(__name__)
 DEBUG = False
 
 
 class Command(BaseCommand):
-    help = "Output a sample of the database as a fixture of the given format."
+    help = "Load the saved fixture from a file named development_data.json.gz."
 
     def add_arguments(self, parser):
         parser.add_argument(
-            "--format",
-            default="json",
-            dest="format",
-            help="Specifies the output serialization format for fixtures.",
+            "-i",
+            "--input",
+            default="development_data.json.gz",
+            dest="input",
+            type=str,
+            help="Path of the input file (default: development_data.json.gz)",
         )
         parser.add_argument(
-            "--indent",
-            default=4,
-            dest="indent",
-            type=int,
-            help="Specifies the indent level to use when pretty-printing output",
-        )
-        parser.add_argument(
-            "--limit",
-            default=None,
-            dest="limit",
-            type=int,
-            help="Allows you to limit the number of tables, used for testing purposes only",
-        )
-        parser.add_argument(
-            "--skipcache",
+            "-y",
+            "--yes",
             default=False,
-            dest="skipcache",
+            dest="yes",
             action="store_true",
-            help="Skips the settings cache",
+            help="Do not ask the users whether they are sure or not",
         )
 
     def handle(self, **options):
-        fixture_path = os.path.join(settings.BASE_ROOT, "development_data.json.gz")
+        self.input = Path(options.get("input"))
+        self.yes = options.get("yes")
+
+        fixture_path = (
+            self.input
+            if self.input.is_absolute()
+            else Path(settings.BASE_ROOT) / self.input
+        )
         logger.info("loading the fixture from %s", fixture_path)
 
-        ContentType.objects.clear_cache()
+        if not self.yes:
+            print(
+                "Beware, this step will delete data from your database {} at {}.".format(
+                    connection.settings_dict["NAME"],
+                    connection.settings_dict["HOST"] or "localhost",
+                )
+            )
+            print("DO NOT EVER ATTEMPT TO RUN THIS COMMAND IN PRODUCTION!")
+
+            answer = input("Are you sure you want to continue? [y/N] ")
+
+            if not answer.lower().startswith("y"):
+                return
+
+        # these signals can trigger a DoesNotExist exception, so we disconnect them
+        signals = {pre_save: [], post_save: []}
+
+        for signal in signals.keys():
+            signals[signal] = signal.receivers
+            signal.receivers = []
+
+        # ContentType and Permission models are populated by the migrations and
+        # that would clash with the loaded data, so we need to truncate these tables
+        logger.info("cleaning ContentType and Permission models")
+        ContentType.objects.all().delete()
+        Permission.objects.all().delete()
+
         call_command(
             "loaddata",
             fixture_path,
-            exclude=["contenttypes.ContentType", "auth.Permission", "auth.Group"],
             traceback=True,
             verbosity=3,
         )
+
+        for signal, receivers in signals.items():
+            signal.receivers = receivers

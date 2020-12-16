@@ -1,0 +1,494 @@
+[
+{
+  "model": "example.userdependency",
+  "pk": 1,
+  "fields": {
+    "user": 1,
+    "forward_dependency": 1,
+    "text": "Admin dependency"
+  }
+},
+{
+  "model": "example.userdependency",
+  "pk": 2,
+  "fields": {
+    "user": 3,
+    "forward_dependency": 1,
+    "text": "Regular dependency"
+  }
+},
+{
+  "model": "example.userdependency",
+  "pk": 3,
+  "fields": {
+    "user": 2,
+    "forward_dependency": 1,
+    "text": "Staff dependency"
+  }
+},
+{
+  "model": "example.userdependency",
+  "pk": 4,
+  "fields": {
+    "user": 1,
+    "forward_dependency": 2,
+    "text": "Admin dependency 2"
+  }
+},
+{
+  "model": "example.userdependency",
+  "pk": 5,
+  "fields": {
+    "user": 3,
+    "forward_dependency": 2,
+    "text": "Regular dependency 2"
+  }
+},
+{
+  "model": "example.forwarddependency",
+  "pk": 1,
+  "fields": {
+    "bool": false
+  }
+},
+{
+  "model": "example.forwarddependency",
+  "pk": 2,
+  "fields": {
+    "bool": true
+  }
+},
+{
+  "model": "example.reversedependency",
+  "pk": 1,
+  "fields": {
+    "dependency": 1,
+    "date": "2020-12-23",
+    "more_text": "1"
+  }
+},
+{
+  "model": "example.reversedependency",
+  "pk": 2,
+  "fields": {
+    "dependency": 2,
+    "date": "2020-12-23",
+    "more_text": "2"
+  }
+},
+{
+  "model": "example.reversedependency",
+  "pk": 3,
+  "fields": {
+    "dependency": 4,
+    "date": "2020-12-23",
+    "more_text": "4"
+  }
+},
+{
+  "model": "example.reversedependency",
+  "pk": 4,
+  "fields": {
+    "dependency": 5,
+    "date": "2020-12-23",
+    "more_text": "5"
+  }
+},
+{
+  "model": "example.loop",
+  "pk": 1,
+  "fields": {
+    "dependency": 1,
+    "parent": null,
+    "loop_text": "Loop start"
+  }
+},
+{
+  "model": "example.loop",
+  "pk": 2,
+  "fields": {
+    "dependency": null,
+    "parent": 1,
+    "loop_text": "next 1"
+  }
+},
+{
+  "model": "example.loop",
+  "pk": 3,
+  "fields": {
+    "dependency": null,
+    "parent": 2,
+    "loop_text": "next 2"
+  }
+},
+{
+  "model": "example.loop",
+  "pk": 4,
+  "fields": {
+    "dependency": 3,
+    "parent": 3,
+    "loop_text": "next 3"
+  }
+},
+{
+  "model": "example.notrelatedtouser",
+  "pk": 1,
+  "fields": {
+    "dependency": 2,
+    "text": "A"
+  }
+},
+{
+  "model": "example.notrelatedtouser",
+  "pk": 2,
+  "fields": {
+    "dependency": 2,
+    "text": "B"
+  }
+},
+{
+  "model": "example.notrelatedtouser",
+  "pk": 3,
+  "fields": {
+    "dependency": 2,
+    "text": "C"
+  }
+},
+{
+  "model": "example.notrelatedtouser",
+  "pk": 4,
+  "fields": {
+    "dependency": 1,
+    "text": "D"
+  }
+},
+{
+  "model": "example.notrelatedtouser",
+  "pk": 5,
+  "fields": {
+    "dependency": 1,
+    "text": "E"
+  }
+},
+{
+  "model": "example.notrelatedtouser",
+  "pk": 6,
+  "fields": {
+    "dependency": 1,
+    "text": "F"
+  }
+},
+{
+  "model": "example.notrelatedtouser",
+  "pk": 7,
+  "fields": {
+    "dependency": 1,
+    "text": "G"
+  }
+},
+{
+  "model": "example.notrelatedtouserdependency",
+  "pk": 1,
+  "fields": {
+    "text": "dependency"
+  }
+},
+{
+  "model": "example.notrelatedtouserdependency",
+  "pk": 2,
+  "fields": {
+    "text": "dependency 2"
+  }
+},
+{
+  "model": "example.m2mregular",
+  "pk": 1,
+  "fields": {
+    "text": "test",
+    "m2m": [
+      1,
+      2,
+      3
+    ]
+  }
+},
+{
+  "model": "example.m2mregular",
+  "pk": 2,
+  "fields": {
+    "text": "test",
+    "m2m": [
+      5,
+      6,
+      7
+    ]
+  }
+},
+{
+  "model": "example.m2mthrough",
+  "pk": 1,
+  "fields": {
+    "text": "Test"
+  }
+},
+{
+  "model": "example.m2mthrough",
+  "pk": 2,
+  "fields": {
+    "text": "test"
+  }
+},
+{
+  "model": "example.through",
+  "pk": 1,
+  "fields": {
+    "m2m": 1,
+    "not_related": 1,
+    "some_data": "foo"
+  }
+},
+{
+  "model": "example.through",
+  "pk": 2,
+  "fields": {
+    "m2m": 2,
+    "not_related": 6,
+    "some_data": "bar"
+  }
+},
+{
+  "model": "example.through",
+  "pk": 3,
+  "fields": {
+    "m2m": 1,
+    "not_related": 7,
+    "some_data": "baz"
+  }
+},
+{
+  "model": "example.through",
+  "pk": 4,
+  "fields": {
+    "m2m": 2,
+    "not_related": 3,
+    "some_data": "quux"
+  }
+},
+{
+  "model": "example.extra",
+  "pk": 1,
+  "fields": {
+    "extra_chars": "123"
+  }
+},
+{
+  "model": "example.extra",
+  "pk": 2,
+  "fields": {
+    "extra_chars": "456"
+  }
+},
+{
+  "model": "example.extra",
+  "pk": 3,
+  "fields": {
+    "extra_chars": "1221"
+  }
+},
+{
+  "model": "example.extra",
+  "pk": 4,
+  "fields": {
+    "extra_chars": "342323"
+  }
+},
+{
+  "model": "example.extra",
+  "pk": 5,
+  "fields": {
+    "extra_chars": "324"
+  }
+},
+{
+  "model": "example.extra",
+  "pk": 6,
+  "fields": {
+    "extra_chars": "545"
+  }
+},
+{
+  "model": "example.extra",
+  "pk": 7,
+  "fields": {
+    "extra_chars": "43242"
+  }
+},
+{
+  "model": "example.extra",
+  "pk": 8,
+  "fields": {
+    "extra_chars": "55"
+  }
+},
+{
+  "model": "example.extra",
+  "pk": 9,
+  "fields": {
+    "extra_chars": "14334"
+  }
+},
+{
+  "model": "example.extra",
+  "pk": 10,
+  "fields": {
+    "extra_chars": "55"
+  }
+},
+{
+  "model": "example.extra",
+  "pk": 11,
+  "fields": {
+    "extra_chars": "124"
+  }
+},
+{
+  "model": "example.extra",
+  "pk": 12,
+  "fields": {
+    "extra_chars": "144"
+  }
+},
+{
+  "model": "example.extra",
+  "pk": 13,
+  "fields": {
+    "extra_chars": "1433242"
+  }
+},
+{
+  "model": "example.extra",
+  "pk": 14,
+  "fields": {
+    "extra_chars": "234423"
+  }
+},
+{
+  "model": "example.extra",
+  "pk": 15,
+  "fields": {
+    "extra_chars": "23423"
+  }
+},
+{
+  "model": "example.extra",
+  "pk": 16,
+  "fields": {
+    "extra_chars": "52253"
+  }
+},
+{
+  "model": "example.extra",
+  "pk": 17,
+  "fields": {
+    "extra_chars": "532235"
+  }
+},
+{
+  "model": "example.extra",
+  "pk": 18,
+  "fields": {
+    "extra_chars": "253523"
+  }
+},
+{
+  "model": "example.extra",
+  "pk": 19,
+  "fields": {
+    "extra_chars": "523253"
+  }
+},
+{
+  "model": "example.extra",
+  "pk": 20,
+  "fields": {
+    "extra_chars": "11"
+  }
+},
+{
+  "model": "example.extra",
+  "pk": 21,
+  "fields": {
+    "extra_chars": "234"
+  }
+},
+{
+  "model": "example.extra",
+  "pk": 22,
+  "fields": {
+    "extra_chars": "534534"
+  }
+},
+{
+  "model": "example.extra",
+  "pk": 23,
+  "fields": {
+    "extra_chars": "42545"
+  }
+},
+{
+  "model": "example.extra",
+  "pk": 24,
+  "fields": {
+    "extra_chars": "255"
+  }
+},
+{
+  "model": "example.extra",
+  "pk": 25,
+  "fields": {
+    "extra_chars": "2525"
+  }
+},
+{
+  "model": "example.extra",
+  "pk": 26,
+  "fields": {
+    "extra_chars": "25353"
+  }
+},
+{
+  "model": "example.extra",
+  "pk": 27,
+  "fields": {
+    "extra_chars": "235523"
+  }
+},
+{
+  "model": "example.extra",
+  "pk": 28,
+  "fields": {
+    "extra_chars": "235253"
+  }
+},
+{
+  "model": "example.extra",
+  "pk": 29,
+  "fields": {
+    "extra_chars": "235253"
+  }
+},
+{
+  "model": "example.extra",
+  "pk": 30,
+  "fields": {
+    "extra_chars": "235235"
+  }
+},
+{
+  "model": "example.extra",
+  "pk": 31,
+  "fields": {
+    "extra_chars": "23535"
+  }
+}
+]

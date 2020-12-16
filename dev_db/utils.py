@@ -4,45 +4,32 @@ Model level functions
 import time
 
 
-def get_max_id(m):
-    max_id = 0
-    id_primary_key = model_has_id_primary_key(m)
-    if id_primary_key:
-        instances = list(m._default_manager.all().order_by("-id")[:1])
-        if instances:
-            max_id = getattr(instances[0], "id", 0)
-    return max_id
+def get_max_id(model):
+    last = model._default_manager.order_by("-pk").first()
+    return last.pk if last and isinstance(last, int) else 0
 
 
-def get_field_names(m):
-    field_names = [f.name for f in m._meta.fields]
-    return field_names
+def get_field_names(model):
+    return [f.name for f in model._meta.fields]
 
 
-def model_has_id_primary_key(m):
-    field_names = get_field_names(m)
-    id_primary_key = "id" in field_names
-    return id_primary_key
+def model_name(model):
+    return model._meta.label
 
 
-def model_name(m):
-    module = m.__module__.split(".")[:-1]  # remove .models
-    return ".".join(module + [m._meta.object_name])
+def get_all_fields(model):
+    # follow forward relation fields
+    normal_fields = model._meta.fields
+    many_to_many_fields = model._meta.many_to_many
+    private_fields = model._meta.private_fields
+
+    all_fields = list(normal_fields) + list(many_to_many_fields) + list(private_fields)
+    return all_fields
 
 
 """
 Instance level functions
 """
-
-
-def get_all_fields(instance):
-    # follow forward relation fields
-    normal_fields = instance.__class__._meta.fields
-    many_to_many_fields = instance.__class__._meta.many_to_many
-    private_fields = instance.__class__._meta.private_fields
-
-    all_fields = list(normal_fields) + list(many_to_many_fields) + list(private_fields)
-    return all_fields
 
 
 def hash_instance(instance):
