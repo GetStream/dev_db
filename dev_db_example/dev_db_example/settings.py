@@ -130,10 +130,10 @@ INSTALLED_APPS = (
     "django.contrib.admindocs",
     # our additions
     "dev_db",
-    "core",
+    "example",
 )
 
-DEV_DB_CREATOR = "core.dev_db_creator.ExampleDevDBCreator"
+DEV_DB_CREATOR = "example.dev_db_creator.ExampleDevDBCreator"
 
 # A sample logging configuration. The only tangible logging
 # performed by this configuration is to send an email to

@@ -20,4 +20,4 @@ script:
   - pip install -e .
   - pip install django
   - cd dev_db_example
-  - python manage.py test dev_db
+  - python manage.py test example

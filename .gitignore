@@ -2,3 +2,4 @@
 *.pot
 *.pyc
 local_settings.py
+dev_db_example/test_dev_db
