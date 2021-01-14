@@ -3,9 +3,7 @@ from setuptools import setup, find_packages
 from dev_db import __version__, __maintainer__, __email__
 
 
-DESCRIPTION = """Tool to automatically create a development database for local development by sampling your production database.
-It maintains referential integrity by looking up the dependencies for the selected rows.
-"""
+DESCRIPTION = """Tool to automatically create a development database for local development by sampling your production database."""
 
 
 tests_require = [
