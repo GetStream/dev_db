@@ -18,7 +18,10 @@ tests_require = [
 install_requires = []
 
 license_text = open("LICENSE.txt").read()
-long_description = open("README.md").read()
+
+with open("README.md", "r", encoding="utf-8") as fh:
+    long_description = fh.read()
+
 CLASSIFIERS = [
     "Development Status :: 5 - Production/Stable",
     "Intended Audience :: Developers",
