@@ -39,6 +39,7 @@ setup(
     url="http://github.com/tschellenbach/dev_db",
     description=DESCRIPTION,
     long_description=long_description,
+    long_description_content_type="text/markdown",
     packages=find_packages(exclude=("tests",)),
     zip_safe=False,
     install_requires=install_requires,
