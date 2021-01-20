@@ -8,6 +8,7 @@ from django.contrib.auth import get_user_model
 from django.contrib.auth.models import Permission
 from django.contrib.contenttypes.models import ContentType
 from django.utils.functional import cached_property
+from django.db.utils import NotSupportedError
 from django.db.models.fields.related import ManyToManyField
 
 from dev_db.decorators import cached
@@ -149,7 +150,12 @@ class DevDBCreator:
             if isinstance(model._meta.get_field(attr), ManyToManyField):
                 qs_new = dependency._base_manager.none()
 
-                for q in qs.prefetch_related(attr):
+                try:
+                    qs = qs.prefetch_related(attr)
+                except NotSupportedError:
+                    pass
+
+                for q in qs:
                     qs_new = qs_new.union(
                         getattr(q, attr)
                         .exclude(pk__in=fetched_pks[dependency])
