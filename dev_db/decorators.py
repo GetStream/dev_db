@@ -20,6 +20,7 @@ def simplify_class_decorator(class_decorator):
         return a function which accepts the *args and *kwargs intended
         for fn
     """
+
     # this makes sure the resulting decorator shows up as
     # function FacebookRequired instead of outer
     @wraps(class_decorator)
@@ -40,7 +41,6 @@ def simplify_class_decorator(class_decorator):
 
 
 class CachedDecorator:
-
     """
     Decorator which cached the call to the give function. Usage example ::
 
@@ -114,7 +114,9 @@ class CachedDecorator:
         """
         import inspect
 
-        argnames, varargs, keywords, defaults = inspect.getargspec(fn)
+        # Use inspect.signature() instead of deprecated getargspec()
+        sig = inspect.signature(fn)
+        argnames = list(sig.parameters.keys())
         arg_kwargs = dict(list(zip(argnames, args)))
         kwargs.update(arg_kwargs)
         args = []
